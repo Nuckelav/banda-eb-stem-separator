@@ -20,6 +20,16 @@
   <p>O modelo geral devolve a bateria inteira. Um segundo modelo divide-a em kick, snare, pratos e toms. A bateria inteira fica como referência e uma pista "resíduo" guarda o que o segundo modelo não atribuiu, para que a soma das pistas continue igual e nada seja duplicado.</p>
   <h2>A mistura reconstruída é igual ao original?</h2>
   <p>É muito próxima, mas não idêntica: é a soma das pistas produzidas pelos modelos. O ficheiro LEIA-ME.txt do ZIP indica a relação sinal/erro medida.</p>
+  <h2>Ferramentas de prática</h2>
+  <p>Depois da separação, o estúdio tem uma barra de prática:</p>
+  <ul>
+    <li><b>Velocidade</b> (50% a 150%) e <b>Tom</b> (-6 a +6 semitons) independentes: mudar um não altera o outro. O processamento é local e pode demorar alguns segundos; as exportações continuam a usar o áudio original, sem alteração.</li>
+    <li><b>BPM</b> estimado automaticamente (corrigível à mão) e <b>metrónomo</b> sincronizado com a música, que acompanha a velocidade. A <b>contagem</b> (4, 8 ou 16 tempos) toca antes de a música arrancar.</li>
+    <li><b>Loop A-B</b>: arraste na régua do tempo para marcar um trecho, ou use os botões A e B na posição atual.</li>
+    <li><b>Acordes</b> e <b>tom da música</b> estimados por análise de sinal, e transpostos quando muda o Tom. São tríades maiores e menores: não deteta acordes com sétimas, extensões ou baixo invertido.</li>
+    <li><b>Pan</b> por pista (esquerda/direita); duplo clique centra.</li>
+  </ul>
+  <p>São estimativas automáticas e podem falhar em músicas com tempo variável, ritmo irregular ou muita distorção. Não há transcrição de letras nem identificação de músicas: exigiriam serviços online, o que contraria o processamento local.</p>
   <h2>Qualidade e limitações</h2>
   <p>Todos os modelos geram artefactos, sobretudo em misturas densas. Os primeiros e últimos instantes de cada música podem ter menos precisão. A taxa de trabalho é 44,1 kHz estéreo; músicas noutras taxas são reamostradas, sem alterar duração nem tom.</p>
   <h2>Modelos personalizados</h2>

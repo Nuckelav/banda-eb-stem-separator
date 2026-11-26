@@ -9,6 +9,7 @@ import { computePeaks, drawWave, drawRuler, fmtTime } from './core/waveform.js';
 import { encodeWav } from './core/wav.js';
 import { makeZip } from './core/zip.js';
 import { CATEGORIES, mixDown, leaves, snrDb } from './core/tracks.js';
+import { detectTempo, monoOf, chromagram, detectChords, detectKey, transposeName, NOTE } from './core/analysis.js';
 
 const $ = id => document.getElementById(id);
 const COLORS = { Bateria: '#ff5a4d', Percussão: '#ffb454', Cordas: '#f3f3f3', Teclados: '#ff9fb0', 'Metais e sopros': '#d9a066', Vocais: '#ff2e3f', Outros: '#8f8f8f' };
@@ -22,7 +23,7 @@ const ICON = {
 // ---------- estado ----------
 const S = {
   file: null, fileKey: null, dec: null, tracks: [], report: [], peaks: new Map(), player: null,
-  view: { start: 0, pxPerSec: 50, zoom: 0 }, abort: null, webgpu: false, lastRun: null,
+  view: { start: 0, pxPerSec: 50, zoom: 0 }, chords: [], key: null, tempo: null, loop: { a: 0, b: 0, on: false }, abort: null, webgpu: false, lastRun: null,
   cfg: loadCfg(),
 };
 
@@ -171,6 +172,7 @@ function renderInstruments() {
 
 // ---------- estúdio ----------
 function teardownStudio() {
+  $('practice').hidden = true; S.chords = []; S.key = null; S.tempo = null; S.loop = { a: 0, b: 0, on: false };
   S.player?.stop(); S.player?.ctx.close(); S.player = null; S.peaks.clear();
   $('tracks').querySelectorAll('.track').forEach(n => n.remove());
   $('studioBody').hidden = true; $('studioEmpty').hidden = false;
@@ -219,7 +221,11 @@ function buildStudio() {
     if (isLeaf) {
       const vol = document.createElement('input'); vol.type = 'range'; vol.className = 'vol'; vol.min = 0; vol.max = 1.5; vol.step = 0.01; vol.value = 1; vol.setAttribute('aria-label', 'Volume da pista');
       vol.addEventListener('input', () => { t.volume = Number(vol.value); S.player.applyGains(); });
-      head.append(vol);
+      const lbl = document.createElement('div'); lbl.className = 'lbl'; lbl.innerHTML = '<span>E</span><span>Pan</span><span>D</span>';
+      const pan = document.createElement('input'); pan.type = 'range'; pan.className = 'pan'; pan.min = -1; pan.max = 1; pan.step = 0.05; pan.value = 0; pan.setAttribute('aria-label', 'Pan da pista (esquerda/direita)');
+      pan.addEventListener('input', () => { t.pan = Number(pan.value); S.player.applyGains(); });
+      pan.addEventListener('dblclick', () => { pan.value = 0; t.pan = 0; S.player.applyGains(); });
+      head.append(vol, pan, lbl);
     } else { const m = document.createElement('span'); m.className = 'meta'; m.textContent = 'Grupo de referência (não entra na soma: já dividido em pistas abaixo)'; head.append(m); }
     const lane = document.createElement('div'); lane.className = 'lane';
     const cv = document.createElement('canvas'); lane.append(cv);
@@ -227,6 +233,7 @@ function buildStudio() {
     row.append(head, lane); wrap.append(row);
   }
   setupView(dur);
+  initPractice();
   redraw();
 }
 
@@ -277,6 +284,13 @@ $('tracks').addEventListener('wheel', e => {
     const z = Math.max(0, Math.min(6, S.view.zoom - e.deltaY * 0.003)); $('zoom').value = z; applyZoom(z, sec);
   } else { S.view.start += (e.deltaX || e.deltaY) / S.view.pxPerSec; clampView(); redraw(); }
 }, { passive: false });
+const rulerSec = e => { const r = $('ruler').getBoundingClientRect(); return Math.max(0, Math.min(S.dec.duration, S.view.start + (e.clientX - r.left) / S.view.pxPerSec)); };
+$('ruler').addEventListener('pointerdown', e => {
+  if (!S.player) return; const a = rulerSec(e); let moved = false; $('ruler').setPointerCapture(e.pointerId);
+  const mv = ev => { const b = rulerSec(ev); if (Math.abs(b - a) * S.view.pxPerSec > 4) { moved = true; setLoop(Math.min(a, b), Math.max(a, b), true); } };
+  const up = ev => { $('ruler').removeEventListener('pointermove', mv); $('ruler').removeEventListener('pointerup', up); if (!moved) S.player.seek(a).then(() => tick(true)); };
+  $('ruler').addEventListener('pointermove', mv); $('ruler').addEventListener('pointerup', up);
+});
 window.addEventListener('themechange', () => { if (S.dec && S.tracks.length) redraw(); });
 window.addEventListener('resize', () => { if (S.dec && S.tracks.length) applyZoom(S.view.zoom); });
 
@@ -294,7 +308,7 @@ function redraw() {
   });
   const vis = laneWidth() / S.view.pxPerSec, span = S.dec.duration - vis;
   $('scroll').disabled = span <= 0; $('scroll').value = span > 0 ? Math.round(S.view.start / span * 1000) : 0;
-  tick(true);
+  drawChords(); placeLoop(); tick(true);
 }
 
 function tick(once) {
@@ -384,3 +398,95 @@ function renderEngines() {
 }
 
 renderInstruments();
+
+
+// ---------- funções de prática ----------
+const fmtKey = (root, mode, semis = 0) => `${NOTE[(((root + semis) % 12) + 12) % 12]} ${mode === 'maj' ? 'maior' : 'menor'}`;
+
+function initPractice() {
+  const p = S.player;
+  $('practice').hidden = false; $('speed').value = 100; $('pitch').value = 0; $('speedVal').textContent = '100%'; $('pitchVal').textContent = '0';
+  $('metOn').checked = false; $('countIn').value = '0'; $('loopTxt').textContent = ''; $('loopOn').classList.remove('on'); $('procInfo').textContent = '';
+  $('anaInfo').textContent = 'A analisar BPM, tom e acordes...'; $('bpm').value = '';
+  p.setMetronome({ on: false, bpm: 0, offset: 0, countIn: 0 });
+  runAnalysis().catch(e => { $('anaInfo').textContent = `Análise indisponível: ${e?.message || e}`; });
+}
+
+async function runAnalysis() {
+  const len = S.dec.stereo[0].length, tracks = S.tracks;
+  const drumMix = mixDown(tracks, len, t => t.category === 'Bateria' ? 1 : 0);
+  let drumE = 0; for (let i = 0; i < len; i += 97) drumE += Math.abs(drumMix[0][i]);
+  const tempoSrc = drumE > 1 ? drumMix : S.dec.stereo;
+  await new Promise(r => setTimeout(r));
+  S.tempo = detectTempo(monoOf(tempoSrc), WORK_RATE);
+  const harm = mixDown(tracks, len, t => t.category === 'Bateria' ? 0 : 1);
+  const frames = await chromagram(monoOf(harm), WORK_RATE);
+  S.key = detectKey(frames);
+  const seg = S.tempo ? Math.max(0.5, 2 * 60 / S.tempo.bpm) : 1.5;
+  S.chords = detectChords(frames, S.dec.duration, seg);
+  if (S.tempo) { $('bpm').value = S.tempo.bpm; S.player.setMetronome({ bpm: S.tempo.bpm, offset: S.tempo.offset }); }
+  updateAnaInfo(); drawChords();
+}
+
+function updateAnaInfo() {
+  const semis = S.player?.semis || 0;
+  const k = S.key ? (semis ? `${fmtKey(S.key.root, S.key.mode)} → ${fmtKey(S.key.root, S.key.mode, semis)}` : fmtKey(S.key.root, S.key.mode)) : '—';
+  $('anaInfo').textContent = `Tom estimado: ${k}  |  BPM estimado: ${S.tempo ? S.tempo.bpm : '—'} (ajustável)`;
+}
+
+let procTimer;
+function applyTempoPitch() {
+  clearTimeout(procTimer);
+  const speed = Number($('speed').value) / 100, semis = Number($('pitch').value);
+  $('speedVal').textContent = `${$('speed').value}%`; $('pitchVal').textContent = semis > 0 ? `+${semis}` : String(semis);
+  procTimer = setTimeout(async () => {
+    const p = S.player; if (!p) return;
+    ['speed', 'pitch'].forEach(id => $(id).disabled = true);
+    try { await p.setTempoPitch(speed, semis, v => { $('procInfo').textContent = v < 1 ? `A processar ${Math.round(v * 100)}%` : ''; }); }
+    catch (e) { $('procInfo').textContent = `Erro: ${e?.message || e}`; }
+    ['speed', 'pitch'].forEach(id => $(id).disabled = false);
+    updateAnaInfo(); drawChords(); syncPlayButtons();
+  }, 450);
+}
+$('speed').addEventListener('input', applyTempoPitch);
+$('pitch').addEventListener('input', applyTempoPitch);
+
+const metPatch = () => S.player?.setMetronome({ on: $('metOn').checked, vol: Number($('metVol').value), countIn: Number($('countIn').value), bpm: Number($('bpm').value) || 0, offset: S.tempo?.offset || 0 });
+['metOn', 'metVol', 'countIn'].forEach(id => $(id).addEventListener('input', metPatch));
+$('bpm').addEventListener('input', metPatch);
+
+function setLoop(a, b, on) {
+  S.loop = { a, b, on: on && b > a };
+  S.player?.setLoop(a, b, S.loop.on);
+  $('loopOn').classList.toggle('on', S.loop.on);
+  $('loopTxt').textContent = b > a ? `${fmtTime(a, true)} – ${fmtTime(b, true)}` : (a ? `A ${fmtTime(a, true)}` : '');
+  placeLoop();
+}
+$('loopA').addEventListener('click', () => { const t = S.player.position(); setLoop(t, S.loop.b > t ? S.loop.b : 0, S.loop.on && S.loop.b > t); });
+$('loopB').addEventListener('click', () => { const t = S.player.position(); if (t > S.loop.a) setLoop(S.loop.a, t, true); });
+$('loopOn').addEventListener('click', () => { if (S.loop.b > S.loop.a) setLoop(S.loop.a, S.loop.b, !S.loop.on); });
+$('loopClr').addEventListener('click', () => setLoop(0, 0, false));
+
+function placeLoop() {
+  const box = $('loopBox'); if (!S.dec || !(S.loop.b > S.loop.a)) { box.style.display = 'none'; return; }
+  const head = document.querySelector('#studioBody .head')?.offsetWidth || 268, w = laneWidth();
+  const x0 = Math.max(0, (S.loop.a - S.view.start) * S.view.pxPerSec), x1 = Math.min(w, (S.loop.b - S.view.start) * S.view.pxPerSec);
+  if (x1 <= 0 || x0 >= w) { box.style.display = 'none'; return; }
+  box.style.display = 'block'; box.style.left = `${head + x0}px`; box.style.width = `${Math.max(2, x1 - x0)}px`; box.style.opacity = S.loop.on ? '1' : '.45';
+}
+
+function drawChords() {
+  const cv = $('chordCv'); if (!cv || !S.dec || !S.chords.length) return;
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  const cs = getComputedStyle(document.documentElement), semis = S.player?.semis || 0;
+  g.font = '700 13px Inter, "Segoe UI", system-ui, sans-serif'; g.textBaseline = 'middle';
+  for (const c of S.chords) {
+    const x0 = (c.t0 - S.view.start) * S.view.pxPerSec, x1 = (c.t1 - S.view.start) * S.view.pxPerSec;
+    if (x1 < 0 || x0 > w) continue;
+    g.fillStyle = c.name ? cs.getPropertyValue('--soft') : 'transparent'; g.fillRect(x0 + 1, 3, Math.max(1, x1 - x0 - 2), h - 6);
+    g.strokeStyle = cs.getPropertyValue('--line'); g.strokeRect(x0 + 1.5, 3.5, Math.max(1, x1 - x0 - 3), h - 7);
+    if (x1 - x0 > 26 && c.name) { g.fillStyle = cs.getPropertyValue('--text'); g.fillText(transposeName(c.root, c.mode, semis), Math.max(x0, 0) + 6, h / 2); }
+  }
+}

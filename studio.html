@@ -71,11 +71,28 @@
         </div>
       </div>
 
+      <div id="practice" class="practice" hidden>
+        <label class="ctl">Velocidade <input id="speed" type="range" min="50" max="150" step="5" value="100"><b id="speedVal">100%</b></label>
+        <label class="ctl">Tom (semitons) <input id="pitch" type="range" min="-6" max="6" step="1" value="0"><b id="pitchVal">0</b></label>
+        <label class="ctl">BPM <input id="bpm" class="num" type="number" min="40" max="240" step="0.1" aria-label="BPM"></label>
+        <label class="ctl chk"><input id="metOn" type="checkbox"> Metrónomo</label>
+        <label class="ctl">Volume do clique <input id="metVol" type="range" min="0" max="1" step="0.05" value="0.6"></label>
+        <label class="ctl">Contagem <select id="countIn"><option value="0">Sem</option><option value="4">4 tempos</option><option value="8">8 tempos</option><option value="16">16 tempos</option></select></label>
+        <span class="ctl">Loop
+          <button id="loopA" class="btn sm" type="button" title="Marcar início (A) na posição atual">A</button>
+          <button id="loopB" class="btn sm" type="button" title="Marcar fim (B) na posição atual">B</button>
+          <button id="loopOn" class="btn sm" type="button">Ativar</button>
+          <button id="loopClr" class="btn sm" type="button">Limpar</button>
+          <b id="loopTxt"></b></span>
+        <span id="anaInfo" class="ana" aria-live="polite"></span>
+        <span id="procInfo" class="ana" aria-live="polite"></span>
+      </div>
       <div id="studioEmpty" class="empty">O estúdio aparece aqui depois da separação.</div>
       <div id="studioBody" hidden>
         <div class="row ruler-row"><div class="head"></div><div class="lane"><canvas id="ruler" class="ruler"></canvas></div></div>
+        <div class="row"><div class="head"><span class="muted small">Acordes</span></div><div class="lane"><canvas id="chordCv" class="chordcv"></canvas></div></div>
         <div class="row"><div class="head"><span class="muted small">Navegação</span></div><div class="lane"><input id="scroll" class="scrollbar" type="range" min="0" max="1000" value="0"></div></div>
-        <div id="tracks" class="tracks"><div id="playhead" class="playhead"></div></div>
+        <div id="tracks" class="tracks"><div id="loopBox" class="loopbox"></div><div id="playhead" class="playhead"></div></div>
       </div>
     </section>
   </div>

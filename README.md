@@ -15,6 +15,8 @@ Projeto estático, sem passo de compilação: HTML + módulos ES. Páginas: `ind
 | Hi-hat aberto/fechado, crash, ride, rimshot, floor tom | **Sem modelo livre**: os modelos que os separam (LarsNet, Timbrica) têm licença não comercial (CC BY-NC / CC BY-NC-SA) e não estão ativos |
 | Percussão (congas, bongôs...), guitarra solo/base, órgão, sintetizadores, metais, sopros | **Sem modelo** aberto verificado |
 | Voz principal vs. backing/coros | **Sem modelo** com export para navegador verificado |
+| Prática: velocidade e tom independentes (WSOLA + reamostragem), BPM, metrónomo, contagem, loop A-B, pan, tom e acordes estimados | Implementado e testado (`test/practice.test.mjs`). Estimativas por processamento de sinal, não por IA; os acordes são tríades maiores/menores |
+| Letras sincronizadas, identificação de músicas, importação de links | Não implementado (exigem serviços online) |
 | FLAC | Não implementado (os navegadores não codificam FLAC de forma fiável). Exporta WAV 16/24/32 float |
 
 A interface nunca mostra como "Separado" algo que um modelo não produziu, e uma etapa que falha é reportada como falhada.
