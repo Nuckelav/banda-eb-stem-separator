@@ -277,6 +277,7 @@ $('tracks').addEventListener('wheel', e => {
     const z = Math.max(0, Math.min(6, S.view.zoom - e.deltaY * 0.003)); $('zoom').value = z; applyZoom(z, sec);
   } else { S.view.start += (e.deltaX || e.deltaY) / S.view.pxPerSec; clampView(); redraw(); }
 }, { passive: false });
+window.addEventListener('themechange', () => { if (S.dec && S.tracks.length) redraw(); });
 window.addEventListener('resize', () => { if (S.dec && S.tracks.length) applyZoom(S.view.zoom); });
 
 function seekFromEvent(e, cv) {

@@ -6,9 +6,8 @@
 .hero{padding:84px 0 56px}
 .hero h2{font-size:clamp(32px,5vw,56px);line-height:1.08;letter-spacing:-.01em;text-transform:none;color:var(--text);margin:0 0 18px;font-weight:700}
 .hero h2 em{font-style:normal;color:var(--teal)}
-.hero p{max-width:640px;font-size:17px;color:#b7cccb;margin:0 0 28px}
+.hero p{max-width:640px;font-size:17px;color:var(--text2);margin:0 0 28px}
 .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
-a.btn{text-decoration:none;display:inline-block}
 .sec{padding:40px 0;border-top:1px solid var(--line)}
 .sec h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);margin:0 0 18px}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px}
@@ -19,6 +18,5 @@ table.cap th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:v
 .foot{padding:32px 0 56px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
 .foot a{color:var(--teal)}
 .prose{max-width:760px;padding:40px 0 60px} .prose h2{font-size:22px;text-transform:none;letter-spacing:0;color:var(--text);margin:36px 0 10px}
-.prose p,.prose li{color:#b7cccb} .prose code{background:var(--panel2);padding:1px 6px;border-radius:4px;font-size:13px}
-a.btn{color:var(--text)} a.btn.primary{color:#032a25}
+.prose p,.prose li{color:var(--text2)} .prose code{background:var(--panel2);padding:1px 6px;border-radius:4px;font-size:13px}
 .foot.site{max-width:1080px;margin:0 auto}

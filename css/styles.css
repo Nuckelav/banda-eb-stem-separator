@@ -1,12 +1,20 @@
 :root{
-  --bg:#080c0d; --panel:#0e1517; --panel2:#121b1d; --line:#1f2e31; --text:#e5f0ef; --muted:#7f9a9a;
+  --bg:#080c0d; --panel:#0e1517; --panel2:#121b1d; --line:#1f2e31; --text:#e5f0ef; --muted:#9db6b6;
   --teal:#2dd4bf; --teal2:#14b8a6; --warn:#e9b44c; --bad:#e5786d; --head:268px;
+  --on-teal:#032a25; --input:#0b1213; --hover:#0f1b1c; --soft:#12302c; --track:#17262a; --sep:#152225; --ph:#fff; --text2:#b7cccb;
 }
+[data-theme=light]{
+  --bg:#f3f7f7; --panel:#ffffff; --panel2:#ecf3f3; --line:#c9d8d8; --text:#0d1b1b; --muted:#476262;
+  --teal:#0b7f74; --teal2:#0f766e; --warn:#9a6a00; --bad:#b3372c; --on-teal:#ffffff; --input:#f6fafa; --hover:#eaf4f3; --soft:#d6ece9; --track:#d8e4e4; --sep:#e3ecec; --ph:#0d1b1b; --text2:#2f4a4a;
+}
+[hidden]{display:none!important}
+a.btn{text-decoration:none;display:inline-block;color:var(--text)} a.btn.primary{color:var(--on-teal)}
+.themebtn{margin-left:4px}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 "Inter","Segoe UI",system-ui,sans-serif}
 button,select,input{font:inherit;color:inherit}
 .muted{color:var(--muted)} .small{font-size:12px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0c1314,#080c0d)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
 .brand{display:flex;align-items:center;gap:12px;color:var(--teal)}
 .brand h1{margin:0;font-size:16px;letter-spacing:.14em;font-weight:700;color:var(--text)}
 .brand h1 span{color:var(--teal)}
@@ -19,7 +27,7 @@ h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .btn{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:9px 16px;cursor:pointer;letter-spacing:.06em;font-size:12px;font-weight:600;transition:border-color .15s,background .15s}
 .btn:hover:not(:disabled){border-color:var(--teal2)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.btn.primary{background:var(--teal);border-color:var(--teal);color:#032a25}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:var(--on-teal)}
 .btn.primary:hover:not(:disabled){background:#5eead4}
 .btn.ghost{background:transparent}
 .btn.icon{width:38px;height:36px;padding:0;display:grid;place-items:center}
@@ -28,7 +36,7 @@ h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 
 .intake{display:flex;gap:16px;align-items:stretch;flex-wrap:wrap}
 .drop{flex:1 1 380px;display:flex;gap:16px;align-items:center;border:1px dashed #2b4447;border-radius:10px;padding:16px 20px;background:var(--panel);cursor:pointer;color:var(--teal)}
-.drop:hover,.drop.over{border-color:var(--teal);background:#0f1b1c}
+.drop:hover,.drop.over{border-color:var(--teal);background:var(--hover)}
 .drop strong{display:block;color:var(--text);font-size:15px} .drop small{color:var(--muted)}
 .actions{display:flex;gap:10px;align-items:center}
 .analysis{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 24px}
@@ -37,7 +45,7 @@ h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .analysis .warn{color:var(--warn)}
 .progress{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px 18px}
 .progress-row{display:flex;justify-content:space-between;margin-bottom:8px;font-variant-numeric:tabular-nums}
-.bar{height:6px;border-radius:4px;background:#17262a;overflow:hidden} .bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .2s}
+.bar{height:6px;border-radius:4px;background:var(--track);overflow:hidden} .bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .2s}
 .report{list-style:none;margin:10px 0 0;padding:0;font-size:12px;color:var(--muted)}
 .report li{padding:2px 0} .report .ok{color:var(--teal)} .report .falhou{color:var(--bad)} .report .ignorado{color:var(--warn)}
 
@@ -46,10 +54,10 @@ h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .inst{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:16px;max-height:calc(100vh - 120px);overflow:auto;position:sticky;top:12px}
 .inst h3{margin:14px 0 6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
 .inst ul{list-style:none;margin:0;padding:0}
-.inst li{padding:6px 0;border-bottom:1px solid #152225;display:grid;grid-template-columns:1fr auto;gap:2px 8px}
+.inst li{padding:6px 0;border-bottom:1px solid var(--sep);display:grid;grid-template-columns:1fr auto;gap:2px 8px}
 .inst li small{grid-column:1/-1;color:var(--muted);font-size:11px}
 .tag{font-size:11px;border-radius:4px;padding:1px 7px;border:1px solid var(--line);color:var(--muted);align-self:start;white-space:nowrap}
-.tag.done{color:#032a25;background:var(--teal);border-color:var(--teal)}
+.tag.done{color:var(--on-teal);background:var(--teal);border-color:var(--teal)}
 .tag.ready{color:var(--teal);border-color:#1d5a52}
 .tag.none{color:var(--muted)} .tag.fail{color:var(--bad);border-color:#5b2c27}
 
@@ -61,7 +69,7 @@ h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .menu{margin-left:auto;display:flex;gap:8px}
 .seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .seg button{background:transparent;border:0;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--muted)}
-.seg button.on{background:#12302c;color:var(--teal)} .seg button:disabled{opacity:.4;cursor:not-allowed}
+.seg button.on{background:var(--soft);color:var(--teal)} .seg button:disabled{opacity:.4;cursor:not-allowed}
 input[type=range]{accent-color:var(--teal)}
 .empty{padding:60px 20px;text-align:center;color:var(--muted)}
 .row{display:grid;grid-template-columns:var(--head) 1fr}
@@ -75,17 +83,17 @@ input[type=range]{accent-color:var(--teal)}
 .track.group{opacity:.6}
 .track .name{display:flex;gap:6px;align-items:center}
 .track .name input{flex:1;min-width:0;background:transparent;border:1px solid transparent;border-radius:4px;padding:2px 4px;font-weight:600}
-.track .name input:hover,.track .name input:focus{border-color:var(--line);background:#0b1213}
+.track .name input:hover,.track .name input:focus{border-color:var(--line);background:var(--input)}
 .track .dot{width:8px;height:8px;border-radius:50%;flex:none}
 .track .btns{display:flex;gap:4px;align-items:center}
-.track .btns .on{background:var(--teal);color:#032a25;border-color:var(--teal)}
+.track .btns .on{background:var(--teal);color:var(--on-teal);border-color:var(--teal)}
 .track .btns .m.on{background:var(--bad);border-color:var(--bad);color:#2a0b08}
 .track .btns .s.on{background:var(--warn);border-color:var(--warn);color:#2a1d03}
 .track .vol{width:100%}
 .track .lane{height:84px;overflow:hidden}
 .track .lane canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:text}
 .track .meta{font-size:10px;color:var(--muted)}
-.playhead{position:absolute;top:0;bottom:0;width:1px;background:#fff;box-shadow:0 0 6px var(--teal);pointer-events:none;z-index:3;display:none}
+.playhead{position:absolute;top:0;bottom:0;width:1px;background:var(--ph);box-shadow:0 0 6px var(--teal);pointer-events:none;z-index:3;display:none}
 
 dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:0;max-width:820px;width:calc(100vw - 32px)}
 dialog::backdrop{background:rgba(0,0,0,.7)}
@@ -94,7 +102,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 .eng{border:1px solid var(--line);border-radius:8px;padding:12px;margin:10px 0;background:var(--panel2)}
 .eng header{display:flex;gap:10px;align-items:center;justify-content:space-between}
 .eng header label{display:flex;gap:8px;align-items:center;font-weight:600}
-.eng input[type=text]{width:100%;margin-top:8px;background:#0b1213;border:1px solid var(--line);border-radius:6px;padding:7px 9px;font:12px ui-monospace,monospace}
+.eng input[type=text]{width:100%;margin-top:8px;background:var(--input);border:1px solid var(--line);border-radius:6px;padding:7px 9px;font:12px ui-monospace,monospace}
 .eng p{margin:6px 0 0;font-size:12px;color:var(--muted)}
 .eng .warn{color:var(--warn)}
 .blocked{margin-top:14px;border-top:1px solid var(--line);padding-top:10px} .blocked summary{cursor:pointer;color:var(--muted)}

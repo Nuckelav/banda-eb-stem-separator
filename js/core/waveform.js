@@ -23,7 +23,7 @@ export function drawWave(canvas, peaks, rate, viewStart, pxPerSec, color) {
   if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) { canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr); }
   const g = canvas.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
   const mid = h / 2;
-  g.fillStyle = 'rgba(255,255,255,0.06)'; g.fillRect(0, mid, w, 1);
+  g.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--line') || '#333'; g.fillRect(0, mid, w, 1);
   g.fillStyle = color;
   const samplesPerPx = rate / pxPerSec;
   for (let x = 0; x < w; x++) {
@@ -44,7 +44,8 @@ export function drawRuler(canvas, viewStart, pxPerSec, duration) {
   const g = canvas.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
   const steps = [0.1, 0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300];
   const step = steps.find(s => s * pxPerSec >= 70) || 600;
-  g.font = '11px ui-monospace, monospace'; g.fillStyle = '#7d9a9a'; g.strokeStyle = '#27393b';
+  const cs = getComputedStyle(document.documentElement);
+  g.font = '11px ui-monospace, monospace'; g.fillStyle = cs.getPropertyValue('--muted').trim(); g.strokeStyle = cs.getPropertyValue('--line').trim();
   for (let t = Math.ceil(viewStart / step) * step; t <= Math.min(duration, viewStart + w / pxPerSec); t += step) {
     const x = Math.round((t - viewStart) * pxPerSec) + 0.5;
     g.beginPath(); g.moveTo(x, h - 8); g.lineTo(x, h); g.stroke();
