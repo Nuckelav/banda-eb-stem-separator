@@ -11,7 +11,7 @@ import { makeZip } from './core/zip.js';
 import { CATEGORIES, mixDown, leaves, snrDb } from './core/tracks.js';
 
 const $ = id => document.getElementById(id);
-const COLORS = { Bateria: '#f2a65a', Percussão: '#e9d36b', Cordas: '#6fc2ff', Teclados: '#b79bff', 'Metais e sopros': '#ff8fa3', Vocais: '#2dd4bf', Outros: '#9fb3b3' };
+const COLORS = { Bateria: '#ff5a4d', Percussão: '#ffb454', Cordas: '#f3f3f3', Teclados: '#ff9fb0', 'Metais e sopros': '#d9a066', Vocais: '#ff2e3f', Outros: '#8f8f8f' };
 const ICON = {
   play: '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>',
   pause: '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/></svg>',
