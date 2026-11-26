@@ -47,7 +47,7 @@ h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute
 .progress-row{display:flex;justify-content:space-between;margin-bottom:8px;font-variant-numeric:tabular-nums}
 .bar{height:6px;border-radius:4px;background:var(--track);overflow:hidden} .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
 .report{list-style:none;margin:10px 0 0;padding:0;font-size:12px;color:var(--muted)}
-.report li{padding:2px 0} .report .ok{color:var(--accent-t)} .report .falhou{color:var(--bad)} .report .ignorado{color:var(--warn)}
+.report li{padding:2px 0} .report .ok,.report .cache{color:#5fd38d} .report .falhou{color:var(--bad)} .report .ignorado{color:var(--warn)}
 
 .layout{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:18px;align-items:start}
 @media(max-width:1000px){.layout{grid-template-columns:1fr}}
