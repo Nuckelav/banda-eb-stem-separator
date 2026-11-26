@@ -58,15 +58,17 @@ export class OnnxStemEngine {
     if (!cfg.url) throw new Error(`Modelo "${cfg.label}" sem URL configurado.`);
     this.ort = await loadOrt();
     const bytes = await fetchModel(cfg.url, onProgress, cfg.sha256);
-    const order = (await hasWebGPU()) ? ['webgpu', 'wasm'] : ['wasm'];
-    let lastErr;
-    for (const ep of order) {
+    const wantGpu = (await hasWebGPU()) && !localStorage.getItem('banda-eb-cpu-only') && !globalThis.BANDA_CPU_ONLY;
+    const errors = [];
+    for (const ep of wantGpu ? ['webgpu', 'wasm'] : ['wasm']) {
       try {
-        this.session = await this.ort.InferenceSession.create(bytes, { executionProviders: [ep], graphOptimizationLevel: 'all' });
+        this.session = await this.ort.InferenceSession.create(bytes, { executionProviders: [ep], graphOptimizationLevel: 'basic' });
         this.provider = ep; break;
-      } catch (e) { lastErr = e; }
+      } catch (e) { errors.push(`${ep}: ${e?.message || e}`); if (ep === 'webgpu') { try { localStorage.setItem('banda-eb-cpu-only', '1'); } catch { /* ok */ } } }
     }
-    if (!this.session) throw new Error(`Falha ao iniciar o modelo: ${lastErr?.message || lastErr}`);
+    if (!this.session) {
+      throw new Error(`Falha ao iniciar o modelo (${errors.join(' | ')}). ` + (wantGpu ? 'A aceleração WebGPU falhou: recarregue a página (F5) e tente de novo, passará a usar o CPU. ' : '') + 'Se persistir, abra a página Diagnóstico.');
+    }
     this.checkIO();
   }
 

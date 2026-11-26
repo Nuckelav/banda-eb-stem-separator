@@ -22,6 +22,7 @@ async function variant(ort, bytes, name, opts, feedsFn) {
   } catch (e) { log(`  [ERRO] ${name}: ${e?.message || e}`); return false; }
 }
 
+const sel = document.getElementById('which'); sel.replaceChildren(...DEFAULT_ENGINES.map(e => { const o = document.createElement('option'); o.value = e.id; o.textContent = e.label; return o; })); if (q.get('model')) sel.value = q.get('model');
 document.getElementById('run').addEventListener('click', async () => {
   out.textContent = ''; document.getElementById('run').disabled = true;
   try {
@@ -53,7 +54,10 @@ document.getElementById('run').addEventListener('click', async () => {
       ['webgpu, otimização basic', { executionProviders: ['webgpu', 'wasm'], graphOptimizationLevel: 'basic' }],
       ['webgpu, otimização all', { executionProviders: ['webgpu', 'wasm'], graphOptimizationLevel: 'all' }],
     ];
-    for (const [name, opts] of V) { await variant(ort, bytes, name, opts, q.get('run') === '1' ? feeds : null); }
+    const only = q.get('variant');
+    log(only === 'all' ? '(todas as variantes: após uma falha por memória o WebAssembly fica inutilizável e as seguintes falham sempre; recarregue a página para testar uma de cada vez)' : `(variante ${only || 0}; use ?variant=all ou ?variant=N)`);
+    const list = only === 'all' ? V : [V[Number(only || 0)]];
+    for (const [name, opts] of list) { await variant(ort, bytes, name, opts, q.get('run') === '1' ? feeds : null); }
     log('\nFim do diagnóstico.');
   } catch (e) { log('ERRO GERAL: ' + (e?.stack || e)); }
   document.getElementById('run').disabled = false;

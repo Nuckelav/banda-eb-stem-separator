@@ -5,13 +5,14 @@ const HF = 'https://huggingface.co';
 
 export const DEFAULT_ENGINES = [
   {
-    id: 'htdemucs4', role: 'base', label: 'HTDemucs v4 (4 pistas)',
-    url: `${HF}/StemSplitio/htdemucs-onnx/resolve/main/htdemucs_fp16weights.onnx`,
-    verified: 'Entrada/saída documentadas no cartão do modelo; ainda não executado de ponta a ponta neste projeto.',
-    license: 'MIT (código Demucs e pesos). Atribuição pedida: Rouard, Massa, Défossez (ICASSP 2023).',
-    size: '~166 MB (fp16 armazenado)',
+    id: 'htdemucs4', role: 'base', type: 'hybrid-cac', label: 'HTDemucs v4 (4 pistas)',
+    url: `${HF}/Healthykid/htdemucs-onnx/resolve/main/htdemucs_htd_core_L343980_f16w.onnx`,
+    sha256: '1bd0abd2fa6e84bcf441fcc81e5e3a6049cf1c0f99d3da337c79d7d860b41576',
+    verified: 'Export só com o núcleo do modelo (STFT/iSTFT fora do grafo), entradas mix e mag, saídas xt e xs, segundo o cartão. O export "tudo num ficheiro" (StemSplitio) foi testado e FALHA no navegador por falta de memória (>2,5 GB), por isso foi abandonado.',
+    license: 'MIT (código e pesos Demucs, Meta). Atribuição: Rouard, Massa, Défossez (ICASSP 2023).',
+    size: '~90 MB (fp16 armazenado)',
     segment: 343980, overlap: 86000, normalize: false,
-    io: { input: 'mix', output: 'stems' },
+    io: { input: 'mix', spec: 'mag', freq: 'xs', time: 'xt' },
     stems: [
       { key: 'drums', name: 'Bateria (conjunto)', category: 'Bateria' },
       { key: 'bass', name: 'Baixo', category: 'Cordas' },
@@ -20,13 +21,13 @@ export const DEFAULT_ENGINES = [
     ],
   },
   {
-    id: 'htdemucs6', role: 'base', label: 'HTDemucs v4 (6 pistas: guitarra e piano)',
-    url: `${HF}/StemSplitio/htdemucs-6s-onnx/resolve/main/htdemucs_6s.onnx`,
-    verified: 'Nome do ficheiro NÃO confirmado (o cartão não lista URL nem tensores). Confirme o URL antes de usar.',
-    license: 'MIT (código Demucs). Licença dos pesos 6s por confirmar no cartão do modelo.',
+    id: 'htdemucs6', role: 'base', type: 'hybrid-cac', label: 'HTDemucs v4 (6 pistas: guitarra e piano)',
+    url: `${HF}/ggaps/sound-space-models/resolve/main/htdemucs_6s.onnx`,
+    verified: 'Núcleo com STFT fora do grafo (cartão ggaps/sound-space-models). Nomes dos tensores, tamanho e janela NÃO estão no cartão: se falhar, a mensagem de erro indica os nomes reais; use a página Diagnóstico.',
+    license: 'MIT, Copyright Meta Platforms (segundo o cartão ggaps/sound-space-models).',
     size: 'por confirmar',
     segment: 343980, overlap: 86000, normalize: false,
-    io: { input: 'mix', output: 'stems' },
+    io: { input: 'mix', spec: 'mag', freq: 'xs', time: 'xt' },
     stems: [
       { key: 'drums', name: 'Bateria (conjunto)', category: 'Bateria' },
       { key: 'bass', name: 'Baixo', category: 'Cordas' },
