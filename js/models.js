@@ -37,14 +37,15 @@ export const DEFAULT_ENGINES = [
     ],
   },
   {
-    id: 'drumsep', role: 'split', inputFrom: 'drums', label: 'DrumSep (bateria em 4 peças)',
-    url: '',
-    verified: 'Sem export ONNX publicado que eu tenha conseguido verificar. Cole aqui o URL de um export com o contrato mix -> stems [1,4,2,SEG].',
-    license: 'MIT (repositório inagoy/drumsep). Licença dos pesos por confirmar.',
-    size: 'por confirmar',
-    segment: 343980, overlap: 86000, normalize: false,
-    io: { input: 'mix', output: 'stems' },
-    // A ordem DEVE corresponder à ordem de saída do modelo exportado. O repositório lista: bombo, caixa, pratos, toms.
+    id: 'drumsep', role: 'split', inputFrom: 'drums', type: 'hybrid-cac', label: 'DrumSep v2 (bateria em 4 peças)',
+    url: `${HF}/b33zy/drumsep-v2-onnx/resolve/main/drumsep_v2_w10_f16w.onnx`,
+    sha256: 'b05779ea756870f3fe359c63ac501dd12caf3b24d66237b1404bb4dd5b32839a',
+    verified: 'Entradas (mix, mag) e janela de 10 s retiradas do cartão do modelo; a STFT/iSTFT em JavaScript está testada, mas o modelo real ainda não foi executado de ponta a ponta. A origem dos dados de treino não está verificada pelo autor do export.',
+    license: 'MIT (export b33zy, fine-tune gridshiftstudio de inagoy/drumsep, base Demucs/Meta). O cartão avisa que a proveniência dos dados de treino NÃO está verificada: confirme antes de uso comercial.',
+    size: '~168 MB (fp16 armazenado)',
+    segment: 441000, overlap: 110250, normalize: false,
+    io: { input: 'mix', spec: 'mag', freq: 'freq_out', time: 'time_out' },
+    // Ordem indicada no cartão do modelo: kick, snare, cymbals, toms.
     stems: [
       { key: 'kick', name: 'Kick / Bombo', category: 'Bateria' },
       { key: 'snare', name: 'Snare / Caixa', category: 'Bateria' },
@@ -57,7 +58,7 @@ export const DEFAULT_ENGINES = [
 // Capacidades pedidas vs. estado real. "engine" indica qual o motor que a poderia fornecer.
 export const CAPABILITIES = [
   { group: 'Bateria', item: 'Kick, Snare, Toms, Cymbals', engine: 'drumsep' },
-  { group: 'Bateria', item: 'Hi-hat fechado/aberto, Crash, Ride, Rimshot, Floor tom', engine: null, why: 'Nenhum modelo verificado corre no navegador. O LarsNet separa hi-hat de pratos, mas os pesos são CC BY-NC 4.0 e o motor é PyTorch/LibTorch.' },
+  { group: 'Bateria', item: 'Hi-hat fechado/aberto, Crash, Ride, Rimshot, Floor tom', engine: null, why: 'Os modelos abertos para navegador só dão "pratos" juntos. LarsNet (separa hi-hat) tem pesos CC BY-NC 4.0 e o modelo Timbrica é CC BY-NC-SA 4.0: uso não comercial apenas, por isso não estão ativos.' },
   { group: 'Percussão', item: 'Congas, bongôs, shakers, pandeiro e outras', engine: null, why: 'Sem modelo aberto verificado.' },
   { group: 'Cordas', item: 'Baixo', engine: 'base' },
   { group: 'Cordas', item: 'Guitarra (sem distinguir base/solo/acústica/elétrica)', engine: 'htdemucs6' },
@@ -66,5 +67,5 @@ export const CAPABILITIES = [
   { group: 'Teclados', item: 'Órgão, sintetizadores, pads', engine: null, why: 'Sem modelo aberto verificado.' },
   { group: 'Metais e sopros', item: 'Saxofone, trompete, trombone, trompa, tuba', engine: null, why: 'Sem modelo aberto verificado.' },
   { group: 'Vocais', item: 'Voz (mistura vocal)', engine: 'base' },
-  { group: 'Vocais', item: 'Voz principal vs. backing/coros', engine: null, why: 'Os modelos RoFormer/MDX usados por outros projetos são para desktop; sem export ONNX verificado para o navegador.' },
+  { group: 'Vocais', item: 'Voz principal vs. backing/coros', engine: null, why: 'Existe um RoFormer "karaoke" em ONNX, mas com ~875 MB não cabe num separador de navegador. Sem alternativa leve verificada.' },
 ];

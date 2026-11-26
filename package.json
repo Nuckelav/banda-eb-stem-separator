@@ -1,0 +1,11 @@
+{
+  "name": "banda-eb-stem-separator",
+  "version": "0.2.0",
+  "description": "Separação musical por IA no navegador (ONNX Runtime Web)",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node test/core.test.mjs && node test/hspec.test.mjs && node test/engines.test.mjs",
+    "start": "python3 -m http.server 8000"
+  }
+}

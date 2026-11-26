@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BANDA EB AI STEM SEPARATOR</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 12h2M7 7v10M11 4v16M15 8v8M19 10v4M21 12h0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <h1>BANDA EB <span>AI STEM SEPARATOR</span></h1>
+  </div>
+  <div class="env">
+    <a class="btn ghost" href="index.html" style="text-decoration:none">Início</a>
+    <a class="btn ghost" href="ajuda.html" style="text-decoration:none">Ajuda</a>
+    <span id="envGpu" class="pill">WebGPU: a verificar</span>
+    <span class="pill">Processamento local</span>
+    <button id="btnEngines" class="btn ghost" type="button">Motores e modelos</button>
+  </div>
+</header>
+
+<main>
+  <section class="intake" aria-label="Carregar música">
+    <label id="drop" class="drop" tabindex="0">
+      <input id="file" type="file" accept="audio/*,.wav,.mp3,.flac,.m4a,.ogg,.aac" hidden>
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><strong id="dropTitle">Carregar música</strong><small id="dropSub">Arraste um ficheiro ou clique. Nada é enviado para servidores.</small></div>
+    </label>
+    <div class="actions">
+      <button id="btnAnalyze" class="btn" type="button" disabled>ANALISAR MÚSICA</button>
+      <button id="btnSeparate" class="btn primary" type="button" disabled>SEPARAÇÃO AVANÇADA</button>
+      <button id="btnCancel" class="btn ghost" type="button" hidden>Cancelar</button>
+    </div>
+  </section>
+
+  <section id="analysis" class="analysis" hidden aria-live="polite"></section>
+
+  <section id="progressBox" class="progress" hidden aria-live="polite">
+    <div class="progress-row"><span id="progressText">—</span><span id="progressPct">0%</span></div>
+    <div class="bar"><i id="progressBar"></i></div>
+    <ul id="report" class="report"></ul>
+  </section>
+
+  <div class="layout">
+    <aside class="inst" aria-label="Instrumentos">
+      <h2>Instrumentos</h2>
+      <p class="muted small">Estado real de cada componente pedido. Só aparece como “Separado” o que um modelo efetivamente produziu.</p>
+      <div id="instList"></div>
+    </aside>
+
+    <section class="studio" aria-label="Estúdio multipistas">
+      <div class="transport">
+        <button id="tPlay" class="btn icon" type="button" title="Play / Pausa" disabled></button>
+        <button id="tStop" class="btn icon" type="button" title="Parar" disabled></button>
+        <span id="tTime" class="time">0:00 / 0:00</span>
+        <div class="seg" role="group" aria-label="Comparar">
+          <button id="abMix" class="on" type="button" disabled>Resultado</button>
+          <button id="abOrig" type="button" disabled>Original</button>
+        </div>
+        <label class="ctl">Volume geral <input id="master" type="range" min="0" max="1.5" step="0.01" value="1"></label>
+        <label class="ctl">Zoom <input id="zoom" type="range" min="0" max="6" step="0.05" value="0"></label>
+        <label class="ctl">Formato
+          <select id="bitDepth"><option value="24">WAV 24 bits</option><option value="16">WAV 16 bits</option><option value="32">WAV 32 bits float</option></select>
+        </label>
+        <div class="menu">
+          <button id="btnExportAll" class="btn primary" type="button" disabled>EXPORTAR TUDO</button>
+          <button id="btnExportMix" class="btn" type="button" disabled>Exportar mistura atual</button>
+        </div>
+      </div>
+
+      <div id="studioEmpty" class="empty">O estúdio aparece aqui depois da separação.</div>
+      <div id="studioBody" hidden>
+        <div class="row ruler-row"><div class="head"></div><div class="lane"><canvas id="ruler" class="ruler"></canvas></div></div>
+        <div class="row"><div class="head"><span class="muted small">Navegação</span></div><div class="lane"><input id="scroll" class="scrollbar" type="range" min="0" max="1000" value="0"></div></div>
+        <div id="tracks" class="tracks"><div id="playhead" class="playhead"></div></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<dialog id="dlgEngines">
+  <form method="dialog" class="dlg">
+    <h2>Motores e modelos</h2>
+    <p class="muted small">Os modelos são descarregados uma vez, guardados no navegador e executados localmente. Verifique a licença de cada modelo antes de uso comercial.</p>
+    <div id="engineRows"></div>
+    <details class="blocked"><summary>Projetos analisados e não integrados</summary><div id="blockedRows"></div></details>
+    <div class="dlg-actions">
+      <button id="btnClearCache" class="btn ghost" type="button">Limpar resultados guardados</button>
+      <button class="btn primary" value="ok">Fechar</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ajuda · BANDA EB AI STEM SEPARATOR</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 12h2M7 7v10M11 4v16M15 8v8M19 10v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><h1>BANDA EB <span>AI STEM SEPARATOR</span></h1></div>
+  <nav class="nav" aria-label="Principal"><a href="index.html">Início</a><a href="studio.html">Estúdio</a><a href="ajuda.html" aria-current="page">Ajuda</a><a href="https://github.com/Nuckelav/banda-eb-stem-separator">GitHub</a></nav>
+</header>
+<main class="site prose">
+  <h2>Primeira utilização</h2>
+  <p>Abra o <a href="studio.html" style="color:var(--teal)">estúdio</a>, carregue uma música e clique em SEPARAÇÃO AVANÇADA. Na primeira vez, os modelos são descarregados (cerca de 330 MB) e ficam guardados no navegador. Pode cancelar a qualquer momento.</p>
+  <h2>Quanto tempo demora?</h2>
+  <p>Depende do equipamento. Com WebGPU é várias vezes mais rápido do que sem. Use ANALISAR MÚSICA para ver quantos segmentos serão processados e se o navegador tem WebGPU.</p>
+  <h2>Porque é que a bateria aparece em "grupo" e em peças?</h2>
+  <p>O modelo geral devolve a bateria inteira. Um segundo modelo divide-a em kick, snare, pratos e toms. A bateria inteira fica como referência e uma pista "resíduo" guarda o que o segundo modelo não atribuiu, para que a soma das pistas continue igual e nada seja duplicado.</p>
+  <h2>A mistura reconstruída é igual ao original?</h2>
+  <p>É muito próxima, mas não idêntica: é a soma das pistas produzidas pelos modelos. O ficheiro LEIA-ME.txt do ZIP indica a relação sinal/erro medida.</p>
+  <h2>Qualidade e limitações</h2>
+  <p>Todos os modelos geram artefactos, sobretudo em misturas densas. Os primeiros e últimos instantes de cada música podem ter menos precisão. A taxa de trabalho é 44,1 kHz estéreo; músicas noutras taxas são reamostradas, sem alterar duração nem tom.</p>
+  <h2>Modelos personalizados</h2>
+  <p>Em "Motores e modelos" pode ajustar o URL de cada modelo e ativar ou desativar motores. Verifique sempre a licença do modelo antes de uso comercial.</p>
+  <h2>Privacidade</h2>
+  <p>A música nunca sai do seu dispositivo. Só os ficheiros dos modelos são descarregados, do Hugging Face, e a biblioteca de execução do jsDelivr.</p>
+</main>
+</body>
+</html>

@@ -2,17 +2,17 @@
 
 Estúdio de separação musical que corre inteiramente no navegador do visitante (ONNX Runtime Web, WebGPU com recuo para WebAssembly). Sem servidor de IA, sem API paga, sem créditos, sem envio de músicas.
 
-Projeto estático, sem passo de compilação: HTML + módulos ES.
+Projeto estático, sem passo de compilação: HTML + módulos ES. Páginas: `index.html` (apresentação), `studio.html` (estúdio), `ajuda.html`. A publicação no GitHub Pages é automática (`.github/workflows/pages.yml`) depois de os testes passarem; ative Pages em Settings > Pages > Source: GitHub Actions.
 
 ## Estado honesto
 
 | Componente | Estado |
 |---|---|
-| Descodificação, segmentação, overlap-add, pipeline em etapas, resíduo exato, cache, WAV, ZIP, estúdio multipista | Implementado e testado (`node test/core.test.mjs`, 16 testes, mais um teste de browser com ORT simulado) |
+| Descodificação, segmentação, overlap-add, pipeline em etapas, resíduo exato, cache, WAV, ZIP, estúdio multipista | Implementado e testado (`npm test`: lógica de áudio, STFT e motor híbrido com modelos sintéticos; mais um teste de browser com ORT simulado) |
 | Separação 4 pistas (HTDemucs v4, ONNX) | Código real; URL e contrato de E/S vêm do cartão do modelo `StemSplitio/htdemucs-onnx`. **Não foi executado com o modelo real** (o ambiente de desenvolvimento não tinha rede) |
 | 6 pistas (guitarra, piano) | Código real, mas o nome do ficheiro `.onnx` **não está confirmado**; edite o URL em "Motores e modelos" |
-| Bateria em peças (kick, snare, pratos, toms) | Código real (especialista sobre a pista "bateria"), **desligado por omissão**: não encontrei export ONNX do DrumSep publicado. Cole o URL de um export com o contrato `mix -> stems [1,4,2,SEG]` e confirme a ordem das pistas em `js/models.js` |
-| Hi-hat aberto/fechado, crash, ride, rimshot, floor tom | **Sem modelo** utilizável no navegador |
+| Bateria em peças (kick, snare, pratos, toms) | Código real e **ativo por omissão**: DrumSep v2 ONNX (`b33zy/drumsep-v2-onnx`, MIT, janela de 10 s) com STFT/iSTFT em JavaScript (`js/core/hspec.js`, testada). Entradas/saídas e ordem das pistas vêm do cartão do modelo; **não foi executado com o modelo real**. Se a forma da saída não coincidir, a etapa falha com mensagem explícita e a bateria fica inteira. A origem dos dados de treino não está verificada pelo autor do export |
+| Hi-hat aberto/fechado, crash, ride, rimshot, floor tom | **Sem modelo livre**: os modelos que os separam (LarsNet, Timbrica) têm licença não comercial (CC BY-NC / CC BY-NC-SA) e não estão ativos |
 | Percussão (congas, bongôs...), guitarra solo/base, órgão, sintetizadores, metais, sopros | **Sem modelo** aberto verificado |
 | Voz principal vs. backing/coros | **Sem modelo** com export para navegador verificado |
 | FLAC | Não implementado (os navegadores não codificam FLAC de forma fiável). Exporta WAV 16/24/32 float |
@@ -33,7 +33,8 @@ A mistura reconstruída é a soma das pistas do modelo, não uma cópia do origi
 
 ```
 python3 -m http.server 8000     # ou qualquer servidor estático
-# abrir http://localhost:8000/
+# abrir http://localhost:8000/   (estúdio em /studio.html)
+npm test
 ```
 
 O ORT Web é carregado do jsDelivr (versão 1.22.0). Para alojar localmente, copie `dist/` do pacote `onnxruntime-web@1.22.0` para `vendor/` e defina antes do `main.js`:

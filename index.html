@@ -1,96 +1,53 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BANDA EB AI STEM SEPARATOR</title>
-<link rel="stylesheet" href="css/styles.css">
+<meta name="description" content="Separação musical por IA que corre no seu navegador. Gratuita, sem contas, sem envio de ficheiros.">
+<link rel="stylesheet" href="css/site.css">
 </head>
 <body>
 <header class="top">
-  <div class="brand">
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 12h2M7 7v10M11 4v16M15 8v8M19 10v4M21 12h0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    <h1>BANDA EB <span>AI STEM SEPARATOR</span></h1>
-  </div>
-  <div class="env">
-    <span id="envGpu" class="pill">WebGPU: a verificar</span>
-    <span class="pill">Processamento local</span>
-    <button id="btnEngines" class="btn ghost" type="button">Motores e modelos</button>
-  </div>
+  <div class="brand"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 12h2M7 7v10M11 4v16M15 8v8M19 10v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><h1>BANDA EB <span>AI STEM SEPARATOR</span></h1></div>
+  <nav class="nav" aria-label="Principal"><a href="index.html" aria-current="page">Início</a><a href="studio.html">Estúdio</a><a href="ajuda.html">Ajuda</a><a href="https://github.com/Nuckelav/banda-eb-stem-separator">GitHub</a></nav>
 </header>
+<main class="site">
+  <section class="hero">
+    <h2>Separe uma música em pistas, <em>no seu próprio computador</em>.</h2>
+    <p>Bateria, baixo, voz e restantes instrumentos, cada um na sua pista, com estúdio multipista para ouvir, silenciar, isolar e exportar em WAV. O processamento acontece no seu navegador: a música não é enviada para nenhum servidor e não há contas, créditos nem limites além dos do seu equipamento.</p>
+    <div class="cta"><a class="btn primary" href="studio.html">ABRIR O ESTÚDIO</a><a class="btn" href="ajuda.html">COMO FUNCIONA</a></div>
+  </section>
 
-<main>
-  <section class="intake" aria-label="Carregar música">
-    <label id="drop" class="drop" tabindex="0">
-      <input id="file" type="file" accept="audio/*,.wav,.mp3,.flac,.m4a,.ogg,.aac" hidden>
-      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div><strong id="dropTitle">Carregar música</strong><small id="dropSub">Arraste um ficheiro ou clique. Nada é enviado para servidores.</small></div>
-    </label>
-    <div class="actions">
-      <button id="btnAnalyze" class="btn" type="button" disabled>ANALISAR MÚSICA</button>
-      <button id="btnSeparate" class="btn primary" type="button" disabled>SEPARAÇÃO AVANÇADA</button>
-      <button id="btnCancel" class="btn ghost" type="button" hidden>Cancelar</button>
+  <section class="sec">
+    <h3>O que separa hoje</h3>
+    <table class="cap">
+      <thead><tr><th>Componente</th><th>Estado</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td>Voz, baixo, bateria, restantes instrumentos</td><td>Disponível</td><td>HTDemucs v4 (4 pistas)</td></tr>
+        <tr><td>Bateria: kick, snare, pratos, toms</td><td>Disponível (em validação)</td><td>DrumSep v2; ainda a ser validado com músicas reais</td></tr>
+        <tr><td>Guitarra e piano</td><td>Opcional</td><td>Modelo de 6 pistas; o piano é fraco</td></tr>
+        <tr><td>Hi-hat aberto/fechado, crash, ride, rimshot</td><td>Sem modelo livre</td><td>Os modelos existentes têm licença não comercial</td></tr>
+        <tr><td>Metais, sopros, teclados específicos, percussão</td><td>Sem modelo</td><td>Não há modelo aberto leve para navegador</td></tr>
+        <tr><td>Voz principal vs. coros</td><td>Sem modelo</td><td>Os modelos conhecidos são pesados demais para o navegador</td></tr>
+      </tbody>
+    </table>
+    <p class="muted small">A ferramenta nunca mostra como separado o que um modelo não produziu.</p>
+  </section>
+
+  <section class="sec">
+    <h3>Como funciona</h3>
+    <div class="cols">
+      <div><h4>1. Carregue a música</h4><p>MP3, WAV, FLAC, M4A ou OGG. É descodificada localmente.</p></div>
+      <div><h4>2. Separação em etapas</h4><p>Um modelo geral separa a mistura; um especialista divide a bateria. Os resultados ficam guardados e não são recalculados.</p></div>
+      <div><h4>3. Mixe e exporte</h4><p>Todas as pistas ficam sincronizadas. Exporte cada uma, ou tudo num ZIP com a mistura reconstruída.</p></div>
     </div>
   </section>
 
-  <section id="analysis" class="analysis" hidden aria-live="polite"></section>
-
-  <section id="progressBox" class="progress" hidden aria-live="polite">
-    <div class="progress-row"><span id="progressText">—</span><span id="progressPct">0%</span></div>
-    <div class="bar"><i id="progressBar"></i></div>
-    <ul id="report" class="report"></ul>
+  <section class="sec">
+    <h3>Requisitos</h3>
+    <p>Chrome ou Edge 113+, ou Safari 18+, para usar WebGPU. Sem WebGPU funciona em WebAssembly, bastante mais lento. Na primeira utilização descarrega cerca de 330 MB de modelos, que ficam guardados no navegador.</p>
   </section>
-
-  <div class="layout">
-    <aside class="inst" aria-label="Instrumentos">
-      <h2>Instrumentos</h2>
-      <p class="muted small">Estado real de cada componente pedido. Só aparece como “Separado” o que um modelo efetivamente produziu.</p>
-      <div id="instList"></div>
-    </aside>
-
-    <section class="studio" aria-label="Estúdio multipistas">
-      <div class="transport">
-        <button id="tPlay" class="btn icon" type="button" title="Play / Pausa" disabled></button>
-        <button id="tStop" class="btn icon" type="button" title="Parar" disabled></button>
-        <span id="tTime" class="time">0:00 / 0:00</span>
-        <div class="seg" role="group" aria-label="Comparar">
-          <button id="abMix" class="on" type="button" disabled>Resultado</button>
-          <button id="abOrig" type="button" disabled>Original</button>
-        </div>
-        <label class="ctl">Volume geral <input id="master" type="range" min="0" max="1.5" step="0.01" value="1"></label>
-        <label class="ctl">Zoom <input id="zoom" type="range" min="0" max="6" step="0.05" value="0"></label>
-        <label class="ctl">Formato
-          <select id="bitDepth"><option value="24">WAV 24 bits</option><option value="16">WAV 16 bits</option><option value="32">WAV 32 bits float</option></select>
-        </label>
-        <div class="menu">
-          <button id="btnExportAll" class="btn primary" type="button" disabled>EXPORTAR TUDO</button>
-          <button id="btnExportMix" class="btn" type="button" disabled>Exportar mistura atual</button>
-        </div>
-      </div>
-
-      <div id="studioEmpty" class="empty">O estúdio aparece aqui depois da separação.</div>
-      <div id="studioBody" hidden>
-        <div class="row ruler-row"><div class="head"></div><div class="lane"><canvas id="ruler" class="ruler"></canvas></div></div>
-        <div class="row"><div class="head"><span class="muted small">Navegação</span></div><div class="lane"><input id="scroll" class="scrollbar" type="range" min="0" max="1000" value="0"></div></div>
-        <div id="tracks" class="tracks"><div id="playhead" class="playhead"></div></div>
-      </div>
-    </section>
-  </div>
 </main>
-
-<dialog id="dlgEngines">
-  <form method="dialog" class="dlg">
-    <h2>Motores e modelos</h2>
-    <p class="muted small">Os modelos são descarregados uma vez, guardados no navegador e executados localmente. Verifique a licença de cada modelo antes de uso comercial.</p>
-    <div id="engineRows"></div>
-    <details class="blocked"><summary>Projetos analisados e não integrados</summary><div id="blockedRows"></div></details>
-    <div class="dlg-actions">
-      <button id="btnClearCache" class="btn ghost" type="button">Limpar resultados guardados</button>
-      <button class="btn primary" value="ok">Fechar</button>
-    </div>
-  </form>
-</dialog>
-
-<script type="module" src="js/main.js"></script>
+<footer class="site foot">Código aberto sob licença MIT. Os modelos de IA têm licenças próprias, listadas em <a href="https://github.com/Nuckelav/banda-eb-stem-separator/blob/main/THIRD_PARTY.md">THIRD_PARTY.md</a>.</footer>
 </body>
 </html>

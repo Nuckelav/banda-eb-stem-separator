@@ -29,7 +29,7 @@ const S = {
 function loadCfg() {
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem('banda-eb-engines') || '{}'); } catch { /* ignora */ }
-  const engines = DEFAULT_ENGINES.map(e => ({ ...e, url: saved[e.id]?.url ?? e.url, enabled: saved[e.id]?.enabled ?? (e.id === 'htdemucs4') }));
+  const engines = DEFAULT_ENGINES.map(e => ({ ...e, url: saved[e.id]?.url ?? e.url, sha256: (saved[e.id]?.url ?? e.url) === e.url ? e.sha256 : undefined, enabled: saved[e.id]?.enabled ?? (e.id === 'htdemucs4' || e.id === 'drumsep') }));
   return { engines, base: saved.__base || 'htdemucs4' };
 }
 function saveCfg() {
