@@ -22,6 +22,10 @@ jobs:
       - run: |
           mkdir _site
           cp -r index.html studio.html ajuda.html diag.html css js LICENSE THIRD_PARTY.md _site/
+          # carimba as importações com o commit, para que o navegador nunca use ficheiros JS antigos
+          V=${GITHUB_SHA::7}
+          find _site/js -name '*.js' -exec sed -i -E "s#(from '\.{1,2}/[^']+\.js)'#\1?v=$V'#g" {} +
+          sed -i -E "s#(src=\"js/[^\"]+\.js)\"#\1?v=$V\"#g" _site/*.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
