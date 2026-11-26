@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           mkdir _site
-          cp -r index.html studio.html ajuda.html css js LICENSE THIRD_PARTY.md _site/
+          cp -r index.html studio.html ajuda.html diag.html css js LICENSE THIRD_PARTY.md _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }

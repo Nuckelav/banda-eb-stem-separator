@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico · BANDA EB AI STEM SEPARATOR</title>
+<link rel="stylesheet" href="css/styles.css"><script src="js/theme.js"></script>
+</head><body>
+<header class="top"><div class="brand"><h1>BANDA EB <span>DIAGNÓSTICO DOS MODELOS</span></h1></div><div class="env"><a class="btn ghost" href="studio.html">Estúdio</a></div></header>
+<main>
+<p class="muted">Testa, no seu navegador, se os modelos arrancam e quais as definições que funcionam. Nada é enviado: só descarrega os modelos.</p>
+<p><button id="run" class="btn primary" type="button">EXECUTAR DIAGNÓSTICO</button> <label class="ctl" style="display:inline-flex">Modelo
+<select id="which"><option value="htdemucs4">HTDemucs 4 pistas</option><option value="drumsep">DrumSep v2</option></select></label></p>
+<pre id="out" style="white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;font:13px/1.5 ui-monospace,monospace;min-height:200px"></pre>
+</main>
+<script type="module" src="js/diag.js"></script>
+</body></html>
